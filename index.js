@@ -75,8 +75,8 @@ let circle = (x, y, radius, rgba, zo) => {
         COLOR: col,
         Z_ORDER: zo,
         GROUPS: group(3),
-		DONT_FADE: true,
-		DONT_ENTER: true
+        DONT_FADE: true,
+        DONT_ENTER: true
     };
 
     return o
@@ -148,20 +148,10 @@ let json_data = { // tells the program if and how to load JSON files/write to th
         }
 
         let threads_am = require("os").cpus().length;
-
-        function calculateThreads(totalFrames, currentIteration) {
-            const remainingFrames = totalFrames - currentIteration * threads_am;
-
-            if (remainingFrames > 0) {
-                return Math.min(threads_am, remainingFrames);
-            } else {
-                return 0;
-            }
-        }
-
+	let calculateThreads = (totalFrames, currentIteration) => (totalFrames - currentIteration * threads_am) > 0 ? Math.min(threads_am, (totalFrames - currentIteration * threads_am)) : 0;
         let offset_x = 0;
 
-        function createWorker(frameNumber) {
+        let createWorker = (frameNumber) => {
             return new Promise((resolve, reject) => {
                 let objects_tmp;
                 const worker = new Worker(__filename, {
@@ -209,7 +199,7 @@ let json_data = { // tells the program if and how to load JSON files/write to th
             let iterations_left = max_frames;
             let curr_iter = 0;
             while (iterations_left > 0) {
-				console.time(`batch ${curr_iter + 1}`)
+                console.time(`batch ${curr_iter + 1}`)
                 let threads_to_use = calculateThreads(max_frames, curr_iter);
                 iterations_left -= threads_to_use;
 
@@ -223,14 +213,14 @@ let json_data = { // tells the program if and how to load JSON files/write to th
                 resolved_frames.forEach((x, index) => {
                     let transformed_objs = x.objects_tmp.map(obj => {
                         obj.X = obj.X + x.offset_x;
-						obj.LINKED_GROUP = (buildup - threads_to_use) + index + 1
+                        obj.LINKED_GROUP = (buildup - threads_to_use) + index + 1
                         return obj;
                     });
                     objects.push(transformed_objs);
                     transformed_objs.forEach(z => z.SCALING > min_scale ? $.add(z) : saved++)
                 })
                 console.log(`batch ${curr_iter + 1} done (frames left: ${iterations_left})`);
-				console.timeEnd(`batch ${curr_iter + 1}`)
+                console.timeEnd(`batch ${curr_iter + 1}`)
 
                 curr_iter++;
             }
@@ -264,8 +254,8 @@ let json_data = { // tells the program if and how to load JSON files/write to th
                 obj.Y = ny / rescale;
                 obj.SCALING = nscale / rescale / 4
             }
-			obj.DONT_FADE = true;
-			obj.DONT_ENTER = true;
+            obj.DONT_FADE = true;
+            obj.DONT_ENTER = true;
             if (optimize) {
                 if (obj.SCALING > min_scale)
                     $.add(obj)
