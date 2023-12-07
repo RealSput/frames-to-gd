@@ -148,7 +148,7 @@ let json_data = { // tells the program if and how to load JSON files/write to th
         }
 
         let threads_am = require("os").cpus().length;
-        let calculateThreads = (totalFrames, currentIteration) => (totalFrames - currentIteration * threads_am) > 0 ? Math.min(threads_am, (totalFrames - currentIteration * threads_am)) : 0;
+		let calculateThreads = (totalFrames, currentIteration) => (totalFrames - currentIteration * threads_am) > 0 ? Math.min(threads_am, (totalFrames - currentIteration * threads_am)) : 0;
         let offset_x = 0;
 
         let createWorker = (frameNumber) => {
@@ -190,7 +190,7 @@ let json_data = { // tells the program if and how to load JSON files/write to th
             console.log('saved objects:', saved);
             $.exportToSavefile({
                 info: true
-            }); // Uncomment and replace with your actual code
+            });
             console.timeEnd('finished in');
         }
 
